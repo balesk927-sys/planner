@@ -1,0 +1,4 @@
+import { NextRequest,NextResponse } from "next/server";
+import { hasEditorSession } from "@/lib/auth";
+import { getSupabaseAdmin } from "@/lib/supabase";
+export async function POST(req:NextRequest){try{if(!await hasEditorSession())return NextResponse.json({error:"Buka mode edit untuk mengaktifkan notifikasi."},{status:401});const subscription=await req.json();if(!subscription?.endpoint||!subscription?.keys?.p256dh||!subscription?.keys?.auth)return NextResponse.json({error:"Data subscription tidak lengkap."},{status:400});const db=getSupabaseAdmin();const {error}=await db.from("push_subscriptions").upsert({endpoint:subscription.endpoint,subscription,updated_at:new Date().toISOString()},{onConflict:"endpoint"});if(error)throw error;return NextResponse.json({ok:true});}catch(e:any){return NextResponse.json({error:e.message||"Gagal menyimpan subscription."},{status:500});}}

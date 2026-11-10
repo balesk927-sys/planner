@@ -1,0 +1,20 @@
+export type EventSource = "calendar" | "tasks";
+export type PlannerEvent = {
+  id: string;
+  source: EventSource;
+  title: string;
+  start: string | null;
+  end: string | null;
+  allDay: boolean;
+  notes: string;
+  tags: string[];
+  category: string;
+  course: string;
+  weighting: string;
+  completed: boolean;
+  isFixed: boolean;
+  reminderMinutes: number;
+  url: string;
+  lastEditedTime?: string | null;
+};
+export type EventInput = Omit<PlannerEvent,"id"|"url"|"lastEditedTime"> & {id?:string; spontaneous?:boolean};
